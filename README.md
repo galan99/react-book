@@ -19,11 +19,6 @@ npm run eject
 <br/>
 <br/>
 
-### 引入react-router-dom
-
-react-router-dom 版本4<br/>
-import { BrowserRouter as Router, Route, Link } from "react-router-dom"<br/>
-BrowserRouter,hashHistory两种模式 <br/>
 
 ### 使用绝对导入静态资源
 
@@ -31,10 +26,8 @@ webpack.config.js里配置resolve里的alias配置<br/>
 '@src': path.resolve(__dirname, '../src')<br/>
 '@src': __dirname + '../src'<br/>
 
-### React Router4使用说明
-npm install --save react-router-dom
 
-### react使用说明
+# react使用说明
 
 因为class和for都是js的关键字要改成className、htmlFor
 <label htmlFor='sex'>
@@ -189,6 +182,14 @@ const lessModuleRegex = /\.module\.less$/;
         'less-loader'
     ),
 },
+```
+
+# React Router4使用说明
+npm install --save react-router-dom
+react-router-dom 版本4<br/>
+```code
+import { BrowserRouter as Router, Route, Link } from "react-router-dom"<br/>
+BrowserRouter, hashHistory两种模式 <br/>
 ```
 
 # redux教程
