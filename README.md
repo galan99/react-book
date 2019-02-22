@@ -1,7 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
+## [react小书介绍](http://huziketang.mangojuice.top/books/react/lesson25)
 
 ### 创建项目
 
@@ -19,7 +16,8 @@ npm run eject
 
 项目打包
 
-[react小书介绍](http://huziketang.mangojuice.top/books/react/lesson25)
+<br/>
+<br/>
 
 ### 引入react-router-dom
 
