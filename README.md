@@ -19,6 +19,8 @@ npm run eject
 
 项目打包
 
+[react小书介绍](http://huziketang.mangojuice.top/books/react/lesson25)
+
 ### 引入react-router-dom
 
 react-router-dom 版本4<br/>
@@ -106,7 +108,7 @@ props
 可以通过给组件添加类属性 defaultProps 来配置默认参数。
 props 一旦传入，你就不可以在组件内部对它进行修改。但是你可以通过父组件主动重新渲染的方式来传入新的 props，从而达到更新的效果。
 
-# 获取dom操作 ref指令
+### 获取dom操作 ref指令
 class AutoFocusInput extends Component {
   componentDidMount () {
     this.input.focus()
@@ -119,8 +121,48 @@ class AutoFocusInput extends Component {
   }
 }
 
-# 将带标签的字符串转义为html解析
+### 将带标签的字符串转义为html解析
 <p dangerouslySetInnerHTML={{ __html: value.content }}  />
+
+### props验证
+```code
+npm install --save prop-types
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
+PropTypes.object.isRequired 必须传的参数
+PropTypes.array
+PropTypes.bool
+PropTypes.func
+PropTypes.number
+PropTypes.object
+PropTypes.string
+PropTypes.node
+PropTypes.element
+
+class Comment extends Component {
+  // props类型 需要引入prop-types包
+  static propTypes = {
+    comments: PropTypes.array,
+    onDeleteComment: PropTypes.func
+  }
+
+  // 默认 props数据
+  static defaultProps = {
+    comments: []
+  }
+  
+  render () {
+    const { comment } = this.props
+    return (
+      <div className='comment'>
+        <p>{comment.content}</p>
+      </div>
+    )
+  }
+}
+```
+
 
 
 ### 使用less
