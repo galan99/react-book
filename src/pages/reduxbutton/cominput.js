@@ -1,11 +1,29 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { addComment as addRedux } from '@src/store/reducer'
 
 class CommentInput extends Component {
+  static propTypes = {
+    list: PropTypes.array,
+    onSub: PropTypes.func
+  }
+
   constructor () {
     super()
     this.state = {
       username: '',
       content: ''
+    }
+  }
+  componentWillMount () {
+    this._loadUsername()
+  }
+
+  _loadUsername () {
+    const username = localStorage.getItem('username')
+    if (username) {
+      this.setState({ username })
     }
   }
 
@@ -22,9 +40,11 @@ class CommentInput extends Component {
   }
 
   submit(ev){
-    if (this.props.onSubmit) {
-      const { username, content } = this.state
-      this.props.onSubmit({username, content})
+    const { username, content } = this.state
+    if (!username) return alert('请输入用户名')
+    if (!content) return alert('请输入评论内容')
+    if (this.props.onSub) {
+      this.props.onSub({username, content})
     }
     this.setState({ content: '' })
   }
@@ -58,4 +78,21 @@ class CommentInput extends Component {
   }
 }
 
-export default CommentInput
+const mapStateToProps = (state) => {
+  return {
+    list: state.list
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSub: (comment) => {
+      dispatch(addRedux(comment))
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CommentInput)

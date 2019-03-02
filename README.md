@@ -192,4 +192,180 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom"<br/>
 BrowserRouter, hashHistory两种模式 <br/>
 ```
 
+<Route path="/" exact component={Demo}/> exact 是避免/跟其他路由冲突
+
 # redux教程
+
+通过connect将ui与store关联
+```code
+// Input.jsx
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import Item from './item'
+import { deleteComment, deleteAction } from '@src/store/reducer'
+// import './item.less'
+class CommentList extends Component {
+  static propTypes = {
+    list: PropTypes.array,
+    onDel: PropTypes.func,
+    onActionDel: PropTypes.func,
+  }
+
+  handleDelItem(index){
+    console.log(index)
+    this.props.onDel(index)
+    
+  }
+
+  onActionDel(index){
+    this.props.onActionDel(index)
+  }
+
+  render() {
+    return (
+      <div>
+        { this.props.list.map((item, i) => <Item onActionDel={this.onActionDel.bind(this, i)} handleDel={this.handleDelItem.bind(this, i)} comment={item} key={i} />) }
+      </div>
+    )
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    list: state.list
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onDel: (comment) => {
+      dispatch(deleteComment(comment))
+    },
+    onActionDel: (comment) => {
+      dispatch(deleteAction(comment))
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CommentList)
+
+```
+
+> 主代码
+
+```code
+// main.js
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import Demo from '@src/pages/demo'
+import Mybtn from '@src/pages/button'
+import ReduxBtn from '@src/pages/reduxbutton'
+import reducer from '@src/store/reducer'
+
+//创建store
+const middleware = [thunk]
+const store = createStore(reducer, applyMiddleware(...middleware))
+
+class App extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Router>
+          <div>
+            <div>
+              <ul>
+                <li>
+                  <Link to="/">首页</Link>
+                </li>
+                <li>
+                  <Link to="/btn">普通版本留言</Link>
+                </li>
+                <li>
+                  <Link to="/redux">redux版本留言</Link>
+                </li>
+              </ul>
+            </div>
+            <br/>
+            <br/>
+            <Route path="/" exact component={Demo}/>
+            <Route path="/btn" component={Mybtn}/>
+            <Route path='/redux' component={ReduxBtn}/>
+          </div>
+        </Router>
+      </Provider>
+    );
+  }
+}
+
+export default App;
+```
+
+> reducer.js
+
+```code
+// reducer.js
+// action types
+const INIT_COMMENTS = 'INIT_COMMENTS'
+const ADD_COMMENT = 'ADD_COMMENT'
+const DELETE_COMMENT = 'DELETE_COMMENT'
+
+// 同步actions
+export const initComments = (comments) => {
+  return { type: INIT_COMMENTS, comments }
+}
+
+export const addComment = (comment) => {
+  return { type: ADD_COMMENT, comment }
+}
+
+export const deleteComment = (index) => {
+  return { type: DELETE_COMMENT, index }
+}
+
+
+// 异步actions
+export const deleteAction = (index) => (dispatch) => {
+  console.log('异步请求redux')
+  setTimeout(() => {
+    dispatch({ type: DELETE_COMMENT, index })
+  }, 2000);
+}
+
+let initStates = { 
+  list: [
+    {username: '初始名字', content: '初始内容'}
+  ]
+}
+
+//这是reducer
+const reducer = (state = initStates, action) => {
+    switch (action.type) {
+        case 'INIT_COMMENTS':
+          // 初始化评论
+          return { list: action.comments }
+        case 'ADD_COMMENT':
+          // 新增评论
+          return {
+            list: [...state.list, action.comment]
+          }
+        case DELETE_COMMENT:
+          // 删除评论
+          return {
+            list: [
+              ...state.list.slice(0, action.index),
+              ...state.list.slice(action.index + 1)
+            ]
+          }
+        default:
+          return state;
+    }
+}
+export default reducer
+```
